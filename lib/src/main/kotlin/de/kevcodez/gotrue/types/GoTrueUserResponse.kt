@@ -1,4 +1,4 @@
-package de.kevcodez.gotrue
+package de.kevcodez.gotrue.types
 
 import java.time.OffsetDateTime
 

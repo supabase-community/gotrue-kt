@@ -5,6 +5,8 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
 
+    id "com.github.ben-manes.versions" version "0.36.0"
+
 }
 
 repositories {
@@ -14,17 +16,13 @@ repositories {
 dependencies {
 
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
-    compile group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.0.3'
-
+    compile "org.apache.httpcomponents.client5:httpclient5:5.0.3"
 
     // Align versions of all Kotlin components
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
 
     // Use the Kotlin JDK 8 standard library.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:29.0-jre'
 
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.1"
@@ -35,6 +33,4 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
 }
