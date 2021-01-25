@@ -7,7 +7,7 @@ Comes with DTOs for the responses to enable type-safe access.
 ## Usage
 
 ```kotlin
-val goTrueClient = GoTrueClient(
+val goTrueClient = GoTrueDefaultClient(
         baseUrl = "<base-url>",
         defaultHeaders = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
@@ -31,7 +31,17 @@ try {
 
 If you are using [supabase](https://supabase.io/), the base URL will be `https://<your-project-id>.supabase.co/auth/v1`
 
-## Internal libs
+## HTTP / (De)-Serialization
 
 The Apache Http-Client (5.x) is used for executing HTTP calls, Jackson is used to convert responses to DTOs.
-If people actually need it, one may allow both to be interchangeable.
+
+If you want to change that, you need to implement the `GoTrueHttpClient` and the `GoTrueJsonConverter` interface.
+
+See [GoTrueHttpClientApache](lib/src/main/kotlin/de/kevcodez/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](lib/src/main/kotlin/de/kevcodez/gotrue/json/GoTrueJsonConverterJackson.kt).
+
+```kotlin
+val goTrueClient = GoTrueClient(
+        goTrueHttpClient = customHttpClient(),
+        goTrueJsonConverter = customConverter()
+)
+```

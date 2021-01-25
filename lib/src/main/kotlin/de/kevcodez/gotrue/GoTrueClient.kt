@@ -1,47 +1,47 @@
 package de.kevcodez.gotrue
 
+import de.kevcodez.gotrue.http.GoTrueHttpClient
+import de.kevcodez.gotrue.json.GoTrueJsonConverter
 import de.kevcodez.gotrue.types.*
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
-import org.apache.hc.client5.http.impl.classic.HttpClients
 
-class GoTrueClient(
-        baseUrl: String,
-        defaultHeaders: Map<String, String>,
-        httpClient: CloseableHttpClient = HttpClients.createDefault()
+open class GoTrueClient(
+        private val goTrueHttpClient: GoTrueHttpClient,
+        private val goTrueJsonConverter: GoTrueJsonConverter
 ) {
-
-    private val goTrueHttpClient = GoTrueHttpClient(baseUrl, defaultHeaders, httpClient)
 
     /**
      * Returns the publicly available settings for this GoTrue instance.
      */
     fun settings(): GoTrueSettings {
-        return goTrueHttpClient.get(
-                path = "/settings",
-                responseType = GoTrueSettings::class
+        val response = goTrueHttpClient.get(
+                path = "/settings"
         )
+
+        return goTrueJsonConverter.deserialize(response, GoTrueSettings::class)
     }
 
     /**
      * Register a new user with an email and password.
      */
     fun signup(email: String, password: String): GoTrueUserResponse {
-        return goTrueHttpClient.post(
+        val response = goTrueHttpClient.post(
                 path = "/signup",
-                data = mapOf("email" to email, "password" to password),
-                responseType = GoTrueUserResponse::class
-        )
+                data = mapOf("email" to email, "password" to password)
+        )!!
+
+        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
     }
 
     /**
      * Invites a new user with an email.
      */
     fun invite(email: String): GoTrueUserResponse {
-        return goTrueHttpClient.post(
+        val response = goTrueHttpClient.post(
                 path = "/invite",
-                data = mapOf("email" to email),
-                responseType = GoTrueUserResponse::class
-        )
+                data = mapOf("email" to email)
+        )!!
+
+        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
     }
 
     /**
@@ -49,11 +49,12 @@ class GoTrueClient(
      * Type can be signup or recovery and the token is a token returned from either /signup or /recover.
      */
     fun verify(type: GoTrueVerifyType, token: String, password: String? = null): GoTrueTokenResponse {
-        return goTrueHttpClient.post(
+        val response = goTrueHttpClient.post(
                 path = "/verify",
                 data = mapOf("type" to type.name.toLowerCase(), "token" to token, "password" to password),
-                responseType = GoTrueTokenResponse::class
-        )
+        )!!
+
+        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
     }
 
     /**
@@ -71,34 +72,37 @@ class GoTrueClient(
      * Apart from changing email/password, this method can be used to set custom user data.
      */
     fun updateUser(accessToken: String, email: String? = null, password: String? = null, data: Map<String, Any>? = null): GoTrueUserResponse {
-        return goTrueHttpClient.put(
+        val response = goTrueHttpClient.put(
                 path = "/user",
-                data = mapOf("email" to email, "password" to password, "data" to data),
                 headers = mapOf("Authorization" to "Bearer $accessToken"),
-                responseType = GoTrueUserResponse::class
+                data = mapOf("email" to email, "password" to password, "data" to data)
         )
+
+        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
     }
 
     /**
      * Get the JSON object for the logged in user
      */
     fun getUser(accessToken: String): GoTrueUserResponse {
-        return goTrueHttpClient.get(
+        val response = goTrueHttpClient.get(
                 path = "/user",
-                headers = mapOf("Authorization" to "Bearer $accessToken"),
-                responseType = GoTrueUserResponse::class
+                headers = mapOf("Authorization" to "Bearer $accessToken")
         )
+
+        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
     }
 
     /**
      * This is an OAuth2 endpoint that currently implements the password, refresh_token, and authorization_code grant types
      */
     fun token(grantType: GoTrueGrantType, email: String? = null, password: String? = null, refreshToken: String? = null): GoTrueTokenResponse {
-        return goTrueHttpClient.post(
+        val response = goTrueHttpClient.post(
                 path = "/token?grant_type=${grantType.name}",
                 data = mapOf("email" to email, "password" to password, "refresh_token" to refreshToken),
-                responseType = GoTrueTokenResponse::class
-        )
+        )!!
+
+        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
     }
 
     /**
