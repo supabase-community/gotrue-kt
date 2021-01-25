@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.apache.hc.client5.http.ClientProtocolException
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import org.apache.hc.core5.http.ClassicHttpResponse
 import org.apache.hc.core5.http.HttpStatus
@@ -18,10 +18,12 @@ import org.apache.hc.core5.http.io.entity.StringEntity
 import java.net.URI
 import kotlin.reflect.KClass
 
-class HttpClient(
+class GoTrueHttpClient(
         private val baseUrl: String,
-        private val defaultHeaders: Map<String, Any>
+        private val defaultHeaders: Map<String, Any>,
+        private val httpClient: CloseableHttpClient
 ) {
+
     private val objectMapper = ObjectMapper()
             .registerModule(KotlinModule())
             .registerModule(JavaTimeModule())
@@ -59,16 +61,15 @@ class HttpClient(
     }
 
     private fun <T : Any> execute(method: Method, path: String, responseType: KClass<T>? = null, data: Any? = null, headers: Map<String, String> = emptyMap()): T {
-        val httpClient = HttpClients.createDefault()
-
         return httpClient.use { httpClient ->
             val httpRequest = HttpUriRequestBase(method.name, URI(baseUrl + path))
-            if (data != null) {
+            data?.apply {
                 val dataAsString = objectMapper.writeValueAsString(data)
                 httpRequest.entity = StringEntity(dataAsString)
             }
-            defaultHeaders.filter { !headers.containsKey(it.key) }.forEach { (name, value) -> httpRequest.addHeader(name, value) }
-            headers.forEach { (name, value) -> httpRequest.addHeader(name, value) }
+            val allHeaders = defaultHeaders.filter { !headers.containsKey(it.key) } + headers
+            allHeaders.forEach { (name, value) -> httpRequest.addHeader(name, value) }
+
             return@use httpClient.execute(httpRequest, responseHandler(responseType?.java))
         }
     }
@@ -79,19 +80,12 @@ class HttpClient(
                 val status = response.code
                 val entity = response.entity
 
-                val entityAsString = if (entity != null) {
-                    EntityUtils.toString(entity)
-                } else {
-                    null
-                }
+                val entityAsString = entity?.let { EntityUtils.toString(it) }
 
                 if (status >= HttpStatus.SC_SUCCESS && status < HttpStatus.SC_REDIRECTION) {
-                    return if (entityAsString == null || responseType == null)
-                        null
-                    else
-                        objectMapper.readValue(entityAsString, responseType)
+                    return entityAsString?.let { objectMapper.readValue(entityAsString, responseType) }
                 } else {
-                    throw GoTrueHttpException(status, entityAsString);
+                    throw GoTrueHttpException(status, entityAsString)
                 }
             }
         }

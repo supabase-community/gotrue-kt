@@ -1,6 +1,6 @@
 # Kotlin Client for GoTrue
 
-Kotlin client for [Netlify's GoTrue API](https://github.com/netlify/gotrue).
+Kotlin JVM client for [Netlify's GoTrue API](https://github.com/netlify/gotrue).
 
 Comes with DTOs for the responses to enable type-safe access.
 
@@ -24,11 +24,12 @@ try {
     
     println(updatedUser.updatedAt)
 } catch (exc: GoTrueHttpException) {
+    // Exception is thrown on bad status (anything above 300)
     println("Oops, status: ${exc.status}, body:\n${exc.httpBody}")
 }
 ```
 
-If you are using supabase, the base URL will be `https://<your-project-id>.supabase.co/auth/v1`
+If you are using [supabase](https://supabase.io/), the base URL will be `https://<your-project-id>.supabase.co/auth/v1`
 
 ## Internal libs
 

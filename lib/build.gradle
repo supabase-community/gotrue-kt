@@ -28,9 +28,24 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.1"
 
     // Use the Kotlin test library.
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testImplementation "io.mockk:mockk:1.10.5"
+    testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.23'
 
-    // Use the Kotlin JUnit integration.
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
 
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+test {
+    useJUnitPlatform()
 }
