@@ -60,7 +60,7 @@ class GoTrueClient(
      * Password recovery. Will deliver a password recovery mail to the user based on email address.
      */
     fun recover(email: String) {
-        return goTrueHttpClient.post(
+        goTrueHttpClient.post(
                 path = "/recover",
                 data = mapOf("email" to email)
         )
@@ -107,10 +107,9 @@ class GoTrueClient(
      * Remember that the JWT tokens will still be valid for stateless auth until they expires.
      */
     fun logout(accessToken: String) {
-        return goTrueHttpClient.post(
+        goTrueHttpClient.post(
                 path = "/logout",
-                headers = mapOf("Authorization" to "Bearer $accessToken"),
-                responseType = null
+                headers = mapOf("Authorization" to "Bearer $accessToken")
         )
     }
 
