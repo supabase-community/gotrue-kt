@@ -28,16 +28,15 @@ dependencies {
     // Align versions of all Kotlin components
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
 
-    // Use the Kotlin JDK 8 standard library.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.1"
 
-    // Use the Kotlin test library.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
     testImplementation "io.mockk:mockk:1.10.5"
     testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.23'
+    testCompile "com.github.tomakehurst:wiremock-jre8:2.27.2"
 
 }
 
