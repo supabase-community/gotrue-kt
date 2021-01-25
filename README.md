@@ -4,6 +4,28 @@ Kotlin JVM client for [Netlify's GoTrue API](https://github.com/netlify/gotrue).
 
 Comes with DTOs for the responses to enable type-safe access.
 
+![Java CI with Gradle](https://img.shields.io/github/workflow/status/kevcodez/gotrue-kt/Java%20CI%20with%20Gradle?label=BUILD&style=for-the-badge)
+![Gradle Package](https://img.shields.io/github/workflow/status/kevcodez/gotrue-kt/Gradle%20Package?label=PUBLISH&style=for-the-badge)
+![Bintray](https://img.shields.io/bintray/v/kevcodez/gotrue-kt/gotrue-kt?style=for-the-badge)
+
+## Installation
+
+Maven
+```xml
+<dependency>
+	<groupId>de.kevcodez</groupId>
+	<artifactId>gotrue-kt</artifactId>
+	<version>0.0.3</version>
+	<type>pom</type>
+</dependency>
+```
+
+Gradle
+```groovy
+implementation 'de.kevcodez:gotrue-kt:0.0.3'
+```
+
+
 ## Usage
 
 ```kotlin
