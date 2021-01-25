@@ -29,7 +29,7 @@ class GoTrueHttpClientApache(
 
     override fun put(path: String, headers: Map<String, String>, data: Any): String {
         return execute(
-                method = Method.POST,
+                method = Method.PUT,
                 path = path,
                 headers = headers,
                 data = data

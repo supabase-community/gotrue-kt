@@ -1,0 +1,19 @@
+{
+  "id": "efcb01d5-512d-45cc-9b0c-d04b5e3d9697",
+  "aud": "authenticated",
+  "role": "authenticated",
+  "email": "foo@bar.com",
+  "confirmed_at": "2021-01-25T20:04:11.859221Z",
+  "invited_at": "2021-01-25T20:02:10.588452Z",
+  "confirmation_sent_at": "2021-01-25T20:02:10.588452Z",
+  "recovery_sent_at": "2021-01-25T20:03:20.335112Z",
+  "last_sign_in_at": "2021-01-25T20:04:11.859637Z",
+  "app_metadata": {
+    "provider": "email"
+  },
+  "user_metadata": {
+    "admin": true
+  },
+  "created_at": "2021-01-25T20:02:10.586299Z",
+  "updated_at": "2021-01-25T20:05:21.572341Z"
+}

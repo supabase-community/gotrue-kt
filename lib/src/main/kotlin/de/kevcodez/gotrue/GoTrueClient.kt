@@ -23,7 +23,7 @@ open class GoTrueClient(
     /**
      * Register a new user with an email and password.
      */
-    fun signup(email: String, password: String): GoTrueUserResponse {
+    fun signUpWithEmail(email: String, password: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
                 path = "/signup",
                 data = mapOf("email" to email, "password" to password)
@@ -35,7 +35,7 @@ open class GoTrueClient(
     /**
      * Invites a new user with an email.
      */
-    fun invite(email: String): GoTrueUserResponse {
+    fun inviteUserByEmail(email: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
                 path = "/invite",
                 data = mapOf("email" to email)
@@ -60,7 +60,7 @@ open class GoTrueClient(
     /**
      * Password recovery. Will deliver a password recovery mail to the user based on email address.
      */
-    fun recover(email: String) {
+    fun resetPasswordForEmail(email: String) {
         goTrueHttpClient.post(
                 path = "/recover",
                 data = mapOf("email" to email)
@@ -93,13 +93,19 @@ open class GoTrueClient(
         return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
     }
 
-    /**
-     * This is an OAuth2 endpoint that currently implements the password, refresh_token, and authorization_code grant types
-     */
-    fun token(grantType: GoTrueGrantType, email: String? = null, password: String? = null, refreshToken: String? = null): GoTrueTokenResponse {
+    fun issueTokenWithEmailAndPassword(email: String, password: String):GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
-                path = "/token?grant_type=${grantType.name}",
-                data = mapOf("email" to email, "password" to password, "refresh_token" to refreshToken),
+                path = "/token?grant_type=password",
+                data = mapOf("email" to email, "password" to password),
+        )!!
+
+        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
+    }
+
+    fun refreshAccessToken(refreshToken: String):GoTrueTokenResponse {
+        val response = goTrueHttpClient.post(
+                path = "/token?grant_type=refresh_token",
+                data = mapOf("refresh_token" to refreshToken),
         )!!
 
         return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
@@ -110,10 +116,20 @@ open class GoTrueClient(
      * This will revoke all refresh tokens for the user.
      * Remember that the JWT tokens will still be valid for stateless auth until they expires.
      */
-    fun logout(accessToken: String) {
+    fun signOut(accessToken: String) {
         goTrueHttpClient.post(
                 path = "/logout",
                 headers = mapOf("Authorization" to "Bearer $accessToken")
+        )
+    }
+
+    /**
+     * Send user a passwordless login link via email.
+     */
+    fun sendMagicLinkEmail(email: String) {
+        goTrueHttpClient.post(
+                path = "/magiclink",
+                data = mapOf("email" to email)
         )
     }
 

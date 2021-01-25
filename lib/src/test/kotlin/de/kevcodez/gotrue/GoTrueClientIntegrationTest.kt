@@ -1,20 +1,16 @@
 package de.kevcodez.gotrue
 
-import assertk.assertAll
-import assertk.assertThat
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import de.kevcodez.gotrue.types.GoTrueVerifyType
+import org.apache.hc.core5.http.HttpHeaders
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class GoTrueClientIntegrationTest {
 
-    private var wireMockServer: WireMockServer = WireMockServer(9911)
+    private var wireMockServer: WireMockServer = WireMockServer(0)
 
     private var goTrueClient: GoTrueClient? = null
 
@@ -33,29 +29,192 @@ internal class GoTrueClientIntegrationTest {
         wireMockServer.resetAll()
     }
 
-    @Nested
-    inner class Settings {
+    @Test
+    fun `should get settings`() {
+        wireMockServer.stubFor(
+                get("/settings").willReturn(
+                        aResponse()
+                                .withStatus(200)
+                                .withBody(fixture("/fixtures/settings-response.json"))
+                )
+        )
 
-        @Test
-        fun `should get settings`() {
-            wireMockServer.stubFor(
-                    get("/settings").willReturn(aResponse()
-                            .withStatus(200)
-                            .withBody(fixture("/fixtures/get-settings.json")))
-            )
+        goTrueClient!!.settings()
+    }
 
-            val settings = goTrueClient!!.settings()
+    @Test
+    fun `should sign up`() {
+        wireMockServer.stubFor(
+                post("/signup")
+                        .withRequestBody(equalToJson("""{
+                           "email": "foo@bar.de", 
+                           "password": "foobar"
+                           }
+                        """))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/user-response.json"))
+                        )
+        )
 
-            assertAll {
-                with(settings) {
-                    assertThat(autoconfirm).isTrue()
-                    assertThat(disableSignup).isFalse()
-                    assertThat(external.bitbucket).isFalse()
-                    assertThat(external.github).isFalse()
-                    assertThat(external.gitlab).isFalse()
-                }
-            }
-        }
+        goTrueClient!!.signUpWithEmail(
+                email = "foo@bar.de",
+                password = "foobar"
+        )
+    }
+
+    @Test
+    fun `should invite`() {
+        wireMockServer.stubFor(
+                post("/invite")
+                        .withRequestBody(equalToJson("""{"email": "foo@bar.de"}"""))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/user-response.json"))
+                        )
+        )
+
+        goTrueClient!!.inviteUserByEmail("foo@bar.de")
+    }
+
+    @Test
+    fun `should verify`() {
+        wireMockServer.stubFor(
+                post("/verify")
+                        .withRequestBody(equalToJson("""{
+                           "type": "recovery", 
+                           "token": "123"
+                           }
+                        """))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/token-response.json"))
+                        )
+        )
+
+        goTrueClient!!.verify(
+                type = GoTrueVerifyType.RECOVERY,
+                token = "123"
+        )
+    }
+
+    @Test
+    fun `should recover`() {
+        wireMockServer.stubFor(
+                post("/recover")
+                        .withRequestBody(equalToJson("""{"email": "foo@bar.de"}"""))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                        )
+        )
+
+        goTrueClient!!.resetPasswordForEmail("foo@bar.de")
+    }
+
+    @Test
+    fun `should update user`() {
+        wireMockServer.stubFor(
+                put("/user")
+                        .withRequestBody(equalToJson("""{
+                           "data": {
+                            "admin": true
+                           }
+                       }
+                        """))
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer token"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/user-response.json"))
+                        )
+        )
+
+        goTrueClient!!.updateUser(accessToken = "token", data = mapOf("admin" to true))
+    }
+
+    @Test
+    fun `should get user`() {
+        wireMockServer.stubFor(
+                get("/user")
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer token"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/user-response.json"))
+                        )
+        )
+
+        goTrueClient!!.getUser("token")
+    }
+
+    @Test
+    fun `should refresh access token`() {
+        wireMockServer.stubFor(
+                post("/token?grant_type=refresh_token")
+                        .withRequestBody(equalToJson("""{
+                           "refresh_token": "refreshToken" 
+                           }
+                        """))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/token-response.json"))
+                        )
+        )
+
+        goTrueClient!!.refreshAccessToken("refreshToken")
+
+    }
+
+    @Test
+    fun `should issue token with email and password`() {
+        wireMockServer.stubFor(
+                post("/token?grant_type=password")
+                        .withRequestBody(equalToJson("""{
+                           "email": "foo@bar.de", 
+                           "password": "pw"
+                           }
+                        """))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withBody(fixture("/fixtures/token-response.json"))
+                        )
+        )
+
+        goTrueClient!!.issueTokenWithEmailAndPassword("foo@bar.de", "pw")
+    }
+
+    @Test
+    fun `should sign out user`() {
+        wireMockServer.stubFor(
+                post("/logout")
+                        .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer token"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                        )
+        )
+
+        goTrueClient!!.signOut("token")
+    }
+
+    @Test
+    fun `should send magic link`() {
+        wireMockServer.stubFor(
+                post("/magiclink")
+                        .withRequestBody(equalToJson("""{"email": "foo@bar.de"}"""))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                        )
+        )
+
+        goTrueClient!!.sendMagicLinkEmail("foo@bar.de")
     }
 
     private fun fixture(path: String): String {
