@@ -27,5 +27,5 @@ jobs:
     - name: Publish to Bintray
       run: gradle bintrayUpload
       env:
-        bintray.key: ${{ secrets.BINTRAY_API_KEY }}
+        bintray.key: ${{ secrets.BINTRAY_KEY }}
         bintray.user: ${{ secrets.BINTRAY_USER }}
