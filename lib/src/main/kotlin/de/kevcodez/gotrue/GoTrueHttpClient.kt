@@ -79,7 +79,7 @@ class GoTrueHttpClient(
             val allHeaders = defaultHeaders.filter { !headers.containsKey(it.key) } + headers
             allHeaders.forEach { (name, value) -> httpRequest.addHeader(name, value) }
 
-
+            @Suppress("UNCHECKED_CAST")
             if (responseType == null) {
                 return@use httpClient.execute(httpRequest) as T
             } else {

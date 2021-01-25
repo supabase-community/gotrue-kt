@@ -14,6 +14,7 @@ import org.apache.hc.core5.http.HttpHeaders
 import org.apache.hc.core5.http.io.HttpClientResponseHandler
 import org.apache.hc.core5.http.io.entity.StringEntity
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -34,6 +35,35 @@ internal class GoTrueHttpClientTest {
             httpClient = httpClientMock
     )
 
+    init {
+        every { httpClientMock.close() }.returns(Unit)
+    }
+
+    @Test
+    fun `should convert response body to DTO`() {
+        val httpResponse = mockk<CloseableHttpResponse>()
+        val responseCode = 200
+
+        every { httpResponse.code } returns responseCode
+        every { httpResponse.entity } returns StringEntity("""{"foo": "foo", "bar": 1}""")
+
+        mockHttpCallWithResponseParsing(httpResponse)
+
+        val response = goTrueHttpClient.get(
+                path = "/anywhere",
+                responseType = TestDto::class
+        )
+
+        assertThat(response).isEqualTo(TestDto(
+                foo = "foo",
+                bar = 1
+        ))
+    }
+
+    data class TestDto(
+            val foo: String,
+            val bar: Int
+    )
 
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,8 +75,6 @@ internal class GoTrueHttpClientTest {
             val httpResponse = mockk<CloseableHttpResponse>()
             every { httpResponse.code } returns 200
             every { httpResponse.entity } returns null
-
-            mockHttpCall(httpResponse)
 
             val slot = slot<ClassicHttpRequest>()
             every { httpClientMock.execute(capture(slot)) } returns httpResponse
@@ -103,7 +131,7 @@ internal class GoTrueHttpClientTest {
             every { httpResponse.code } returns responseCode
             every { httpResponse.entity } returns httpBody?.let { StringEntity(it) }
 
-            mockHttpCall(httpResponse)
+            mockHttpCallWithResponseParsing(httpResponse)
 
             val exception = assertThrows<GoTrueHttpException> {
                 goTrueHttpClient.get(
@@ -131,11 +159,9 @@ internal class GoTrueHttpClientTest {
             val body: String?
     )
 
-    private fun mockHttpCall(httpResponse: CloseableHttpResponse) {
-        every { httpClientMock.close() }.returns(Unit)
-
+    private fun mockHttpCallWithResponseParsing(httpResponse: CloseableHttpResponse) {
         every { httpClientMock.execute(any(), any<HttpClientResponseHandler<Any>>()) }.answers {
-            val handler = args[1] as HttpClientResponseHandler<Any>
+            val handler = args[1] as HttpClientResponseHandler<*>
             handler.handleResponse(httpResponse)
         }
     }
