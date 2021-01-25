@@ -96,15 +96,15 @@ publishing {
 }
 
 bintray {
-    user = System.getProperty('BINTRAY_USER')
-    key = System.getProperty('BINTRAY_API_KEY')
+    user = System.getenv('bintray.user')
+    key = System.getenv('bintray.key')
     publications = ['mavenPublication']
 
     pkg {
         repo = 'gotrue-kt'
         name = 'gotrue-kt'
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/kevodez/gotrue-kt.git'
+        vcsUrl = 'https://github.com/kevcodez/gotrue-kt.git'
         version {
             name = currentVersion
             desc = currentVersion
