@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import kotlin.reflect.KClass
 
 class GoTrueJsonConverterJackson : GoTrueJsonConverter {
 
@@ -21,7 +20,8 @@ class GoTrueJsonConverterJackson : GoTrueJsonConverter {
         return objectMapper.writeValueAsString(data)
     }
 
-    override fun <T : Any> deserialize(str: String, responseType: KClass<T>): T {
-        return objectMapper.readValue(str, responseType.java)
+    override fun <T : Any> deserialize(str: String, responseType: Class<T>): T {
+        return objectMapper.readValue(str, responseType)
     }
 }
+

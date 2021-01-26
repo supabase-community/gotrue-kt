@@ -17,7 +17,7 @@ class GoTrueJsonConverterJackonTest {
     fun `should serialize and deserialize`(data: Any) {
         val serialized = converter.serialize(data)
 
-        val deserialized = converter.deserialize(serialized, data.javaClass.kotlin)
+        val deserialized = converter.deserialize(serialized, data.javaClass)
 
         assertThat(deserialized).isEqualTo(data)
     }

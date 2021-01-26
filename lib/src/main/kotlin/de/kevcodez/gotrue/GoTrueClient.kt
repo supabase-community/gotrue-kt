@@ -2,6 +2,7 @@ package de.kevcodez.gotrue
 
 import de.kevcodez.gotrue.http.GoTrueHttpClient
 import de.kevcodez.gotrue.json.GoTrueJsonConverter
+import de.kevcodez.gotrue.json.deserialize
 import de.kevcodez.gotrue.types.*
 
 open class GoTrueClient(
@@ -17,7 +18,7 @@ open class GoTrueClient(
                 path = "/settings"
         )
 
-        return goTrueJsonConverter.deserialize(response, GoTrueSettings::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
@@ -29,7 +30,7 @@ open class GoTrueClient(
                 data = mapOf("email" to email, "password" to password)
         )!!
 
-        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
@@ -41,7 +42,7 @@ open class GoTrueClient(
                 data = mapOf("email" to email)
         )!!
 
-        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
@@ -54,7 +55,7 @@ open class GoTrueClient(
                 data = mapOf("type" to type.name.toLowerCase(), "token" to token, "password" to password),
         )!!
 
-        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
@@ -78,7 +79,7 @@ open class GoTrueClient(
                 data = mapOf("email" to email, "password" to password, "data" to data)
         )
 
-        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
@@ -90,7 +91,7 @@ open class GoTrueClient(
                 headers = mapOf("Authorization" to "Bearer $accessToken")
         )
 
-        return goTrueJsonConverter.deserialize(response, GoTrueUserResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     fun issueTokenWithEmailAndPassword(email: String, password: String):GoTrueTokenResponse {
@@ -99,7 +100,7 @@ open class GoTrueClient(
                 data = mapOf("email" to email, "password" to password),
         )!!
 
-        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     fun refreshAccessToken(refreshToken: String):GoTrueTokenResponse {
@@ -108,7 +109,7 @@ open class GoTrueClient(
                 data = mapOf("refresh_token" to refreshToken),
         )!!
 
-        return goTrueJsonConverter.deserialize(response, GoTrueTokenResponse::class)
+        return goTrueJsonConverter.deserialize(response)
     }
 
     /**
