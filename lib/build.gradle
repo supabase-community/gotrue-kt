@@ -12,7 +12,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
 }
 
-String currentVersion = '0.0.4'
+String currentVersion = '0.0.5'
 
 group = 'de.kevcodez'
 version = currentVersion
@@ -111,8 +111,8 @@ publishing {
 }
 
 bintray {
-    user = System.getProperty('bintray.user')
-    key = System.getProperty('bintray.key')
+    user = System.getenv("bintray_user") ?: findProperty("bintray_user")
+    key = System.getenv("bintray_key") ?: findProperty("bintray_key")
     publications = ['mavenPublication']
 
     pkg {
