@@ -114,6 +114,7 @@ bintray {
     user = System.getenv("bintray_user") ?: findProperty("bintray_user")
     key = System.getenv("bintray_key") ?: findProperty("bintray_key")
     publications = ['mavenPublication']
+    publish = true
 
     pkg {
         repo = 'gotrue-kt'
