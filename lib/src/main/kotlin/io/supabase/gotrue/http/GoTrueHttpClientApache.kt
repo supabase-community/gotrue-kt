@@ -1,6 +1,6 @@
-package de.kevcodez.gotrue.http
+package io.supabase.gotrue.http
 
-import de.kevcodez.gotrue.json.GoTrueJsonConverter
+import io.supabase.gotrue.json.GoTrueJsonConverter
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
 import org.apache.hc.core5.http.ClassicHttpResponse

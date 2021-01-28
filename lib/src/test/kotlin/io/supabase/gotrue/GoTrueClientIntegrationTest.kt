@@ -1,8 +1,8 @@
-package de.kevcodez.gotrue
+package io.supabase.gotrue
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import de.kevcodez.gotrue.types.GoTrueVerifyType
+import io.supabase.gotrue.types.GoTrueVerifyType
 import org.apache.hc.core5.http.HttpHeaders
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

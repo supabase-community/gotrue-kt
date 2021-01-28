@@ -1,9 +1,12 @@
-package de.kevcodez.gotrue
+package io.supabase.gotrue
 
-import de.kevcodez.gotrue.http.GoTrueHttpClient
-import de.kevcodez.gotrue.json.GoTrueJsonConverter
-import de.kevcodez.gotrue.json.deserialize
-import de.kevcodez.gotrue.types.*
+import io.supabase.gotrue.http.GoTrueHttpClient
+import io.supabase.gotrue.json.GoTrueJsonConverter
+import io.supabase.gotrue.json.deserialize
+import io.supabase.gotrue.types.GoTrueSettings
+import io.supabase.gotrue.types.GoTrueTokenResponse
+import io.supabase.gotrue.types.GoTrueUserResponse
+import io.supabase.gotrue.types.GoTrueVerifyType
 
 open class GoTrueClient(
         private val goTrueHttpClient: GoTrueHttpClient,
@@ -94,7 +97,7 @@ open class GoTrueClient(
         return goTrueJsonConverter.deserialize(response)
     }
 
-    fun issueTokenWithEmailAndPassword(email: String, password: String):GoTrueTokenResponse {
+    fun issueTokenWithEmailAndPassword(email: String, password: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
                 path = "/token?grant_type=password",
                 data = mapOf("email" to email, "password" to password),
@@ -103,7 +106,7 @@ open class GoTrueClient(
         return goTrueJsonConverter.deserialize(response)
     }
 
-    fun refreshAccessToken(refreshToken: String):GoTrueTokenResponse {
+    fun refreshAccessToken(refreshToken: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
                 path = "/token?grant_type=refresh_token",
                 data = mapOf("refresh_token" to refreshToken),

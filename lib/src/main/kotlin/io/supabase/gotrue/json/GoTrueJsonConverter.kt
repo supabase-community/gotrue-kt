@@ -1,4 +1,4 @@
-package de.kevcodez.gotrue.json
+package io.supabase.gotrue.json
 
 interface GoTrueJsonConverter {
 

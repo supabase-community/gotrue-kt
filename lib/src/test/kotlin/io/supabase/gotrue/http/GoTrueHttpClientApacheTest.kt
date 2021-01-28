@@ -1,10 +1,10 @@
-package de.kevcodez.gotrue.http
+package io.supabase.gotrue.http
 
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import de.kevcodez.gotrue.json.GoTrueJsonConverterJackson
+import io.supabase.gotrue.json.GoTrueJsonConverterJackson
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk

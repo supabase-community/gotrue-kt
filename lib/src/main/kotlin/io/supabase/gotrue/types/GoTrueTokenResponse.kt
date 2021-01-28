@@ -1,4 +1,4 @@
-package de.kevcodez.gotrue.types
+package io.supabase.gotrue.types
 
 data class GoTrueTokenResponse(
         val accessToken: String,

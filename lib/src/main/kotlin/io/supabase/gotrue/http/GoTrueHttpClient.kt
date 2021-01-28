@@ -1,4 +1,4 @@
-package de.kevcodez.gotrue.http
+package io.supabase.gotrue.http
 
 interface GoTrueHttpClient {
 

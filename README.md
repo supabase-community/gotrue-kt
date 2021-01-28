@@ -4,25 +4,25 @@ Kotlin JVM client for [Netlify's GoTrue API](https://github.com/netlify/gotrue).
 
 Comes with DTOs for the responses to enable type-safe access.
 
-![Java CI with Gradle](https://img.shields.io/github/workflow/status/kevcodez/gotrue-kt/Java%20CI%20with%20Gradle?label=BUILD&style=for-the-badge)
-![Gradle Package](https://img.shields.io/github/workflow/status/kevcodez/gotrue-kt/Gradle%20Package?label=PUBLISH&style=for-the-badge)
-![Bintray](https://img.shields.io/bintray/v/kevcodez/gotrue-kt/gotrue-kt?style=for-the-badge)
+![Java CI with Gradle](https://img.shields.io/github/workflow/status/supabase/gotrue-kt/Java%20CI%20with%20Gradle?label=BUILD&style=for-the-badge)
+![Gradle Package](https://img.shields.io/github/workflow/status/supabase/gotrue-kt/Gradle%20Package?label=PUBLISH&style=for-the-badge)
+![Bintray](https://img.shields.io/bintray/v/supabase/gotrue-kt/gotrue-kt?style=for-the-badge)
 
 ## Installation
 
 Maven
 ```xml
 <dependency>
-	<groupId>de.kevcodez</groupId>
+	<groupId>io.supabase</groupId>
 	<artifactId>gotrue-kt</artifactId>
-	<version>0.0.3</version>
+	<version>{version}</version>
 	<type>pom</type>
 </dependency>
 ```
 
 Gradle
 ```groovy
-implementation 'de.kevcodez:gotrue-kt:0.0.3'
+implementation 'io.supabase:gotrue-kt:{version}'
 ```
 
 
@@ -59,7 +59,7 @@ The Apache Http-Client (5.x) is used for executing HTTP calls, Jackson is used t
 
 If you want to change that, you need to implement the `GoTrueHttpClient` and the `GoTrueJsonConverter` interface.
 
-See [GoTrueHttpClientApache](lib/src/main/kotlin/de/kevcodez/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](lib/src/main/kotlin/de/kevcodez/gotrue/json/GoTrueJsonConverterJackson.kt).
+See [GoTrueHttpClientApache](lib/src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](lib/src/main/kotlin/io/supabase/gotrue/json/GoTrueJsonConverterJackson.kt).
 
 ```kotlin
 val goTrueClient = GoTrueClient(

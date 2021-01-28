@@ -14,7 +14,7 @@ plugins {
 
 String currentVersion = '0.0.5'
 
-group = 'de.kevcodez'
+group = 'io.supabase'
 version = currentVersion
 
 repositories {
@@ -81,7 +81,7 @@ def pomConfig = {
     }
 
     scm {
-        url "https://github.com/kevcodez/gotrue-kt"
+        url "https://github.com/supabase/gotrue-kt"
     }
 }
 
@@ -97,13 +97,13 @@ publishing {
                 classifier "javadoc"
             }
 
-            groupId 'de.kevcodez'
+            groupId 'io.supabase'
             artifactId 'gotrue-kt'
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'Kotlin JVM client for Netlify\'s GoTrue API.')
                 root.appendNode('name', 'GoTrue Kotlin')
-                root.appendNode('url', 'https://github.com/kevcodez/gotrue-kt')
+                root.appendNode('url', 'https://github.com/supabase/gotrue-kt')
                 root.children().last() + pomConfig
             }
         }
@@ -120,7 +120,7 @@ bintray {
         repo = 'gotrue-kt'
         name = 'gotrue-kt'
         licenses = ['MIT']
-        vcsUrl = 'https://github.com/kevcodez/gotrue-kt.git'
+        vcsUrl = 'https://github.com/supabase/gotrue-kt.git'
         version {
             name = currentVersion
             desc = currentVersion

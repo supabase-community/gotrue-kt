@@ -1,4 +1,4 @@
-package de.kevcodez.gotrue.json
+package io.supabase.gotrue.json
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature

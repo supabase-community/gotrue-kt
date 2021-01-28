@@ -1,9 +1,9 @@
-package de.kevcodez.gotrue
+package io.supabase.gotrue
 
-import de.kevcodez.gotrue.http.GoTrueHttpClientApache
-import de.kevcodez.gotrue.http.GoTrueHttpClient
-import de.kevcodez.gotrue.json.GoTrueJsonConverterJackson
-import de.kevcodez.gotrue.json.GoTrueJsonConverter
+import io.supabase.gotrue.http.GoTrueHttpClientApache
+import io.supabase.gotrue.http.GoTrueHttpClient
+import io.supabase.gotrue.json.GoTrueJsonConverterJackson
+import io.supabase.gotrue.json.GoTrueJsonConverter
 import org.apache.hc.client5.http.impl.classic.HttpClients
 
 val goTrueJsonConverter = GoTrueJsonConverterJackson()
