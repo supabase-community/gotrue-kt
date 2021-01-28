@@ -2,6 +2,7 @@ package io.supabase.gotrue
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import io.supabase.gotrue.types.GoTrueUserAttributes
 import io.supabase.gotrue.types.GoTrueVerifyType
 import org.apache.hc.core5.http.HttpHeaders
 import org.junit.jupiter.api.AfterEach
@@ -133,7 +134,7 @@ internal class GoTrueClientIntegrationTest {
                         )
         )
 
-        goTrueClient!!.updateUser(accessToken = "token", data = mapOf("admin" to true))
+        goTrueClient!!.updateUser(jwt = "token", attributes = GoTrueUserAttributes(data = mapOf("admin" to true)))
     }
 
     @Test
@@ -186,7 +187,7 @@ internal class GoTrueClientIntegrationTest {
                         )
         )
 
-        goTrueClient!!.issueTokenWithEmailAndPassword("foo@bar.de", "pw")
+        goTrueClient!!.signInWithEmail("foo@bar.de", "pw")
     }
 
     @Test

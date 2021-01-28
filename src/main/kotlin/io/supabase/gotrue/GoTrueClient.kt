@@ -3,10 +3,7 @@ package io.supabase.gotrue
 import io.supabase.gotrue.http.GoTrueHttpClient
 import io.supabase.gotrue.json.GoTrueJsonConverter
 import io.supabase.gotrue.json.deserialize
-import io.supabase.gotrue.types.GoTrueSettings
-import io.supabase.gotrue.types.GoTrueTokenResponse
-import io.supabase.gotrue.types.GoTrueUserResponse
-import io.supabase.gotrue.types.GoTrueVerifyType
+import io.supabase.gotrue.types.*
 
 open class GoTrueClient(
         private val goTrueHttpClient: GoTrueHttpClient,
@@ -14,7 +11,7 @@ open class GoTrueClient(
 ) {
 
     /**
-     * Returns the publicly available settings for this GoTrue instance.
+     * @return the publicly available settings for this GoTrue instance.
      */
     fun settings(): GoTrueSettings {
         val response = goTrueHttpClient.get(
@@ -25,7 +22,10 @@ open class GoTrueClient(
     }
 
     /**
-     * Register a new user with an email and password.
+     * Creates a new user using their [email] address.
+     *
+     * @param[email] The email address of the user.
+     * @param[password] The password of the user.
      */
     fun signUpWithEmail(email: String, password: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
@@ -37,7 +37,9 @@ open class GoTrueClient(
     }
 
     /**
-     * Invites a new user with an email.
+     * Sends an invite link to an [email] address.
+     *
+     * @param[email] The email address of the user.
      */
     fun inviteUserByEmail(email: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
@@ -61,8 +63,33 @@ open class GoTrueClient(
         return goTrueJsonConverter.deserialize(response)
     }
 
+
+
     /**
-     * Password recovery. Will deliver a password recovery mail to the user based on email address.
+     * Sends a reset request to an [email] address.
+     *
+     * ### Notes
+     *
+     * Sends a reset request to an email address.
+     *
+     * When the user clicks the reset link in the email they will be forwarded to:
+     * *<SITE_URL>#access_token=x&refresh_token=y&expires_in=z&token_type=bearer&type=recovery*
+     *
+     * Your app must detect type=recovery in the fragment and display a password reset form to the user.
+     * You should then use the access_token in the url and new password to update the using:
+     *
+     * See [updateUser], example usage:
+     *
+     * ```
+     * goTrueClient.updateUser(
+     *      jwt = accessToken,
+     *      attributes = GoTrueUserAttributes(
+     *          password = "newPassword"
+     *      )
+     * )
+     * ```
+     *
+     * @param[email] The email address of the user.
      */
     fun resetPasswordForEmail(email: String) {
         goTrueHttpClient.post(
@@ -72,32 +99,47 @@ open class GoTrueClient(
     }
 
     /**
-     * Update a user (Requires authentication).
+     * Updates the user data.
      * Apart from changing email/password, this method can be used to set custom user data.
+     *
+     * @param[jwt] A valid, logged-in JWT.
+     * @param[attributes] Custom user attributes you want to update
      */
-    fun updateUser(accessToken: String, email: String? = null, password: String? = null, data: Map<String, Any>? = null): GoTrueUserResponse {
+    fun updateUser(jwt: String, attributes: GoTrueUserAttributes): GoTrueUserResponse {
         val response = goTrueHttpClient.put(
                 path = "/user",
-                headers = mapOf("Authorization" to "Bearer $accessToken"),
-                data = mapOf("email" to email, "password" to password, "data" to data)
+                headers = mapOf("Authorization" to "Bearer $jwt"),
+                data = mapOf(
+                        "email" to attributes.email,
+                        "password" to attributes.password,
+                        "data" to attributes.data
+                )
         )
 
         return goTrueJsonConverter.deserialize(response)
     }
 
     /**
-     * Get the JSON object for the logged in user
+     * Gets the user details.
+     *
+     * @param[jwt] A valid, logged-in JWT.
      */
-    fun getUser(accessToken: String): GoTrueUserResponse {
+    fun getUser(jwt: String): GoTrueUserResponse {
         val response = goTrueHttpClient.get(
                 path = "/user",
-                headers = mapOf("Authorization" to "Bearer $accessToken")
+                headers = mapOf("Authorization" to "Bearer $jwt")
         )
 
         return goTrueJsonConverter.deserialize(response)
     }
 
-    fun issueTokenWithEmailAndPassword(email: String, password: String): GoTrueTokenResponse {
+    /**
+     * Logs in an existing user using their [email] address.
+     *
+     * @param[email] The email address of the user.
+     * @param[password] The password of the user.
+     */
+    fun signInWithEmail(email: String, password: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
                 path = "/token?grant_type=password",
                 data = mapOf("email" to email, "password" to password),
@@ -106,6 +148,11 @@ open class GoTrueClient(
         return goTrueJsonConverter.deserialize(response)
     }
 
+    /**
+     * Generates a new JWT.
+     *
+     * @param[refreshToken] A valid refresh token that was returned on login.
+     */
     fun refreshAccessToken(refreshToken: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
                 path = "/token?grant_type=refresh_token",
@@ -116,19 +163,24 @@ open class GoTrueClient(
     }
 
     /**
-     * Logout a user.
+     * Removes a logged-in session.
+     *
      * This will revoke all refresh tokens for the user.
-     * Remember that the JWT tokens will still be valid for stateless auth until they expires.
+     * Remember that the JWT tokens will still be valid for stateless auth until they expire.
+     *
+     * @param[jwt] A valid, logged-in JWT.
      */
-    fun signOut(accessToken: String) {
+    fun signOut(jwt: String) {
         goTrueHttpClient.post(
                 path = "/logout",
-                headers = mapOf("Authorization" to "Bearer $accessToken")
+                headers = mapOf("Authorization" to "Bearer $jwt")
         )
     }
 
     /**
-     * Send user a passwordless login link via email.
+     * Sends a magic login (passwordless) link to an [email] address.
+     *
+     * @param[email] The email address of the user.
      */
     fun sendMagicLinkEmail(email: String) {
         goTrueHttpClient.post(
