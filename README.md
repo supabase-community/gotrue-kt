@@ -59,7 +59,7 @@ The Apache Http-Client (5.x) is used for executing HTTP calls, Jackson is used t
 
 If you want to change that, you need to implement the `GoTrueHttpClient` and the `GoTrueJsonConverter` interface.
 
-See [GoTrueHttpClientApache](lib/src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](lib/src/main/kotlin/io/supabase/gotrue/json/GoTrueJsonConverterJackson.kt).
+See [GoTrueHttpClientApache](src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](src/main/kotlin/io/supabase/gotrue/json/GoTrueJsonConverterJackson.kt).
 
 ```kotlin
 val goTrueClient = GoTrueClient(
