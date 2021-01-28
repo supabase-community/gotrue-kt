@@ -119,6 +119,7 @@ bintray {
     pkg {
         repo = 'supabase'
         name = 'supabase'
+        userOrg = 'supabase'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/supabase/gotrue-kt.git'
         version {
