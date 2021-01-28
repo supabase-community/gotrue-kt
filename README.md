@@ -13,10 +13,10 @@ Comes with DTOs for the responses to enable type-safe access.
 Maven
 ```xml
 <dependency>
-	<groupId>io.supabase</groupId>
-	<artifactId>gotrue-kt</artifactId>
-	<version>{version}</version>
-	<type>pom</type>
+    <groupId>io.supabase</groupId>
+    <artifactId>gotrue-kt</artifactId>
+    <version>{version}</version>
+    <type>pom</type>
 </dependency>
 ```
 
@@ -30,18 +30,18 @@ implementation 'io.supabase:gotrue-kt:{version}'
 
 ```kotlin
 val goTrueClient = GoTrueDefaultClient(
-        baseUrl = "<base-url>",
-        defaultHeaders = mapOf("Authorization" to "foo", "apiKey" to "bar")
+    baseUrl = "<base-url>",
+    defaultHeaders = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
 
 try {
     goTrueClient.invite("e@ma.il")
 
     val updatedUser = goTrueClient.updateUser(
-            accessToken = "eyJ...", // read from request header
-            data = mapOf(
-                    "admin" = true
-            )
+        accessToken = "eyJ...", // read from request header
+        data = mapOf(
+                "admin" = true
+        )
     )
     
     println(updatedUser.updatedAt)
@@ -63,7 +63,7 @@ See [GoTrueHttpClientApache](src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpC
 
 ```kotlin
 val goTrueClient = GoTrueClient(
-        goTrueHttpClient = customHttpClient(),
-        goTrueJsonConverter = customConverter()
+    goTrueHttpClient = customHttpClient(),
+    goTrueJsonConverter = customConverter()
 )
 ```
