@@ -11,6 +11,11 @@ import org.apache.hc.core5.http.io.entity.EntityUtils
 import org.apache.hc.core5.http.io.entity.StringEntity
 import java.net.URI
 
+/**
+ * Default implementation of the [GoTrueHttpClient] used by the GoTrueDefaultClient.
+ *
+ * Uses closable apache HTTP-Client 5.x.
+ */
 class GoTrueHttpClientApache(
         private val baseUrl: String,
         private val defaultHeaders: Map<String, Any>,

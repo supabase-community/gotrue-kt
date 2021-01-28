@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 
+/**
+ * Default implementation of the [GoTrueJsonConverter] used by the GoTrueDefaultClient.
+ *
+ * Uses Jackson FasterXML for JSON (de)-serialization.
+ */
 class GoTrueJsonConverterJackson : GoTrueJsonConverter {
 
     private val objectMapper = ObjectMapper()
@@ -20,8 +25,8 @@ class GoTrueJsonConverterJackson : GoTrueJsonConverter {
         return objectMapper.writeValueAsString(data)
     }
 
-    override fun <T : Any> deserialize(str: String, responseType: Class<T>): T {
-        return objectMapper.readValue(str, responseType)
+    override fun <T : Any> deserialize(text: String, responseType: Class<T>): T {
+        return objectMapper.readValue(text, responseType)
     }
 }
 
