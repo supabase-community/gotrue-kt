@@ -117,7 +117,7 @@ bintray {
     publish = true
 
     pkg {
-        repo = 'gotrue-kt'
+        repo = 'supabase'
         name = 'gotrue-kt'
         licenses = ['MIT']
         vcsUrl = 'https://github.com/supabase/gotrue-kt.git'
