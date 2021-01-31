@@ -30,11 +30,11 @@ implementation 'io.supabase:gotrue-kt:{version}'
 
 ```kotlin
 val goTrueClient = GoTrueDefaultClient(
-    baseUrl = "<base-url>",
-    defaultHeaders = mapOf("Authorization" to "foo", "apiKey" to "bar")
+    url = "<base-url>",
+    headers = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
 
-try {
+try {d
     goTrueClient.invite("e@ma.il")
 
     val updatedUser = goTrueClient.updateUser(
@@ -63,7 +63,7 @@ See [GoTrueHttpClientApache](src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpC
 
 ```kotlin
 val goTrueClient = GoTrueClient(
-    goTrueHttpClient = customHttpClient(),
+    goTrueHttpClient = { customHttpClient() },
     goTrueJsonConverter = customConverter()
 )
 ```

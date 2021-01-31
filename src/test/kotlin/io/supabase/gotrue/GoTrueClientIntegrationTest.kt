@@ -19,8 +19,8 @@ internal class GoTrueClientIntegrationTest {
     fun proxyToWireMock() {
         wireMockServer.start()
         goTrueClient = GoTrueDefaultClient(
-                baseUrl = "http://localhost:${wireMockServer.port()}",
-                defaultHeaders = emptyMap()
+                url = "http://localhost:${wireMockServer.port()}",
+                headers = emptyMap()
         )
     }
 

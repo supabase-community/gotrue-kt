@@ -15,7 +15,7 @@ open class GoTrueClient(
      */
     fun settings(): GoTrueSettings {
         val response = goTrueHttpClient.get(
-                path = "/settings"
+                url = "/settings"
         )
 
         return goTrueJsonConverter.deserialize(response)
@@ -29,7 +29,7 @@ open class GoTrueClient(
      */
     fun signUpWithEmail(email: String, password: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
-                path = "/signup",
+                url = "/signup",
                 data = mapOf("email" to email, "password" to password)
         )!!
 
@@ -43,7 +43,7 @@ open class GoTrueClient(
      */
     fun inviteUserByEmail(email: String): GoTrueUserResponse {
         val response = goTrueHttpClient.post(
-                path = "/invite",
+                url = "/invite",
                 data = mapOf("email" to email)
         )!!
 
@@ -56,7 +56,7 @@ open class GoTrueClient(
      */
     fun verify(type: GoTrueVerifyType, token: String, password: String? = null): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
-                path = "/verify",
+                url = "/verify",
                 data = mapOf("type" to type.name.toLowerCase(), "token" to token, "password" to password),
         )!!
 
@@ -93,7 +93,7 @@ open class GoTrueClient(
      */
     fun resetPasswordForEmail(email: String) {
         goTrueHttpClient.post(
-                path = "/recover",
+                url = "/recover",
                 data = mapOf("email" to email)
         )
     }
@@ -107,7 +107,7 @@ open class GoTrueClient(
      */
     fun updateUser(jwt: String, attributes: GoTrueUserAttributes): GoTrueUserResponse {
         val response = goTrueHttpClient.put(
-                path = "/user",
+                url = "/user",
                 headers = mapOf("Authorization" to "Bearer $jwt"),
                 data = mapOf(
                         "email" to attributes.email,
@@ -126,7 +126,7 @@ open class GoTrueClient(
      */
     fun getUser(jwt: String): GoTrueUserResponse {
         val response = goTrueHttpClient.get(
-                path = "/user",
+                url = "/user",
                 headers = mapOf("Authorization" to "Bearer $jwt")
         )
 
@@ -141,7 +141,7 @@ open class GoTrueClient(
      */
     fun signInWithEmail(email: String, password: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
-                path = "/token?grant_type=password",
+                url = "/token?grant_type=password",
                 data = mapOf("email" to email, "password" to password),
         )!!
 
@@ -155,7 +155,7 @@ open class GoTrueClient(
      */
     fun refreshAccessToken(refreshToken: String): GoTrueTokenResponse {
         val response = goTrueHttpClient.post(
-                path = "/token?grant_type=refresh_token",
+                url = "/token?grant_type=refresh_token",
                 data = mapOf("refresh_token" to refreshToken),
         )!!
 
@@ -172,7 +172,7 @@ open class GoTrueClient(
      */
     fun signOut(jwt: String) {
         goTrueHttpClient.post(
-                path = "/logout",
+                url = "/logout",
                 headers = mapOf("Authorization" to "Bearer $jwt")
         )
     }
@@ -184,7 +184,7 @@ open class GoTrueClient(
      */
     fun sendMagicLinkEmail(email: String) {
         goTrueHttpClient.post(
-                path = "/magiclink",
+                url = "/magiclink",
                 data = mapOf("email" to email)
         )
     }

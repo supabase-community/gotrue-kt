@@ -17,46 +17,46 @@ import java.net.URI
  * Uses closable apache HTTP-Client 5.x.
  */
 class GoTrueHttpClientApache(
-        private val baseUrl: String,
-        private val defaultHeaders: Map<String, Any>,
-        private val httpClient: CloseableHttpClient,
+        private val url: String,
+        private val headers: Map<String, Any>,
+        private val httpClient: () -> CloseableHttpClient,
         private val goTrueJsonConverter: GoTrueJsonConverter
 ): GoTrueHttpClient {
 
-    override fun post(path: String, headers: Map<String, String>, data: Any?): String? {
+    override fun post(url: String, headers: Map<String, String>, data: Any?): String? {
         return execute(
                 method = Method.POST,
-                path = path,
+                path = url,
                 headers = headers,
                 data = data
         )
     }
 
-    override fun put(path: String, headers: Map<String, String>, data: Any): String {
+    override fun put(url: String, headers: Map<String, String>, data: Any): String {
         return execute(
                 method = Method.PUT,
-                path = path,
+                path = url,
                 headers = headers,
                 data = data
         )!!
     }
 
-    override fun get(path: String, headers: Map<String, String>): String {
+    override fun get(url: String, headers: Map<String, String>): String {
         return execute(
                 method = Method.GET,
-                path = path,
+                path = url,
                 headers = headers
         )!!
     }
 
     private fun execute(method: Method, path: String, data: Any? = null, headers: Map<String, String> = emptyMap()): String? {
-        return httpClient.use { httpClient ->
-            val httpRequest = HttpUriRequestBase(method.name, URI(baseUrl + path))
+        return httpClient().use { httpClient ->
+            val httpRequest = HttpUriRequestBase(method.name, URI(url + path))
             data?.apply {
                 val dataAsString = goTrueJsonConverter.serialize(data)
                 httpRequest.entity = StringEntity(dataAsString)
             }
-            val allHeaders = defaultHeaders.filter { !headers.containsKey(it.key) } + headers
+            val allHeaders = this.headers.filter { !headers.containsKey(it.key) } + headers
             allHeaders.forEach { (name, value) -> httpRequest.addHeader(name, value) }
 
             return@use httpClient.execute(httpRequest, responseHandler())

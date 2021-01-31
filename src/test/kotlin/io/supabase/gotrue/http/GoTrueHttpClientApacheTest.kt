@@ -4,11 +4,11 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import io.supabase.gotrue.json.GoTrueJsonConverterJackson
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.supabase.gotrue.json.GoTrueJsonConverterJackson
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse
 import org.apache.hc.core5.http.ClassicHttpRequest
@@ -24,16 +24,16 @@ import java.util.stream.Stream
 
 internal class GoTrueHttpClientApacheTest {
 
-    private val baseUrl = "https://test.com"
+    private val url = "https://test.com"
     private val httpClientMock = mockk<CloseableHttpClient>()
-    private val defaultHeaders = mapOf(
+    private val headers = mapOf(
             HttpHeaders.AUTHORIZATION to "Bearer foobar"
     )
 
     private val goTrueHttpClient = GoTrueHttpClientApache(
-            baseUrl = baseUrl,
-            defaultHeaders = defaultHeaders,
-            httpClient = httpClientMock,
+            url = url,
+            headers = headers,
+            httpClient = { httpClientMock },
             goTrueJsonConverter = GoTrueJsonConverterJackson()
     )
 
@@ -55,7 +55,7 @@ internal class GoTrueHttpClientApacheTest {
             val requestCapture = mockHttpCallWithGetRequest(httpResponse)
 
             goTrueHttpClient.post(
-                    path = "/anywhere",
+                    url = "/anywhere",
                     headers = testData.customHeaders
             )
 
@@ -74,7 +74,7 @@ internal class GoTrueHttpClientApacheTest {
             return Stream.of(
                     HeadersTestData(
                             customHeaders = emptyMap(),
-                            expectedRequestHeaders = defaultHeaders
+                            expectedRequestHeaders = headers
                     ),
                     HeadersTestData(
                             customHeaders = mapOf(HttpHeaders.AUTHORIZATION to "something else"),
@@ -111,12 +111,12 @@ internal class GoTrueHttpClientApacheTest {
 
             val exception = assertThrows<GoTrueHttpException> {
                 goTrueHttpClient.get(
-                        path = "/anywhere"
+                        url = "/anywhere"
                 )
             }
 
             assertThat(exception.status).isEqualTo(responseCode)
-            assertThat(exception.httpBody).isEqualTo(httpBody)
+            assertThat(exception.data).isEqualTo(httpBody)
         }
 
         @Suppress("unused")
