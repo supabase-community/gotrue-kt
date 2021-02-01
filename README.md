@@ -34,7 +34,7 @@ val goTrueClient = GoTrueDefaultClient(
     headers = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
 
-try {d
+try {
     goTrueClient.invite("e@ma.il")
 
     val updatedUser = goTrueClient.updateUser(
