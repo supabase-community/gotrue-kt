@@ -24,5 +24,3 @@ interface GoTrueJsonConverter {
      */
     fun <T : Any> deserialize(text: String, responseType: Class<T>): T
 }
-
-inline fun <reified T : Any> GoTrueJsonConverter.deserialize(content: String): T = deserialize(content, T::class.java)
