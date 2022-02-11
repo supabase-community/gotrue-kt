@@ -29,7 +29,7 @@ implementation 'io.supabase:gotrue-kt:{version}'
 ## Usage
 
 ```kotlin
-val goTrueClient = GoTrueDefaultClient(
+val goTrueClient = GoTrueClient.defaultGoTrueClient(
     url = "<base-url>",
     headers = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
@@ -51,6 +51,29 @@ try {
 }
 ```
 
+You can also customize the DTO for example if you turn off email verification
+
+`````kotlin
+data class CustomGoTrueUserResponse(
+    val accessToken: String,
+    val tokenType: String,
+    val refreshToken: String,
+    val user: User
+)
+
+data class User(
+    val id: UUID,
+    val email: String,
+    val phone: String
+
+)
+
+GoTrueClient.customApacheJacksonGoTrueClient<CustomGoTrueUserResponse, GoTrueTokenResponse>(
+    url = "<base-url>",
+    headers = mapOf("Authorization" to "foo", "apiKey" to "bar")
+)
+`````
+
 If you are using [supabase](https://supabase.io/), the base URL will be `https://<your-project-id>.supabase.co/auth/v1`
 
 ## HTTP / (De)-Serialization
@@ -62,7 +85,7 @@ If you want to change that, you need to implement the `GoTrueHttpClient` and the
 See [GoTrueHttpClientApache](src/main/kotlin/io/supabase/gotrue/http/GoTrueHttpClientApache.kt) and [GoTrueJsonConverterJackson](src/main/kotlin/io/supabase/gotrue/json/GoTrueJsonConverterJackson.kt).
 
 ```kotlin
-val goTrueClient = GoTrueClient(
+GoTrueClient.goTrueClient<GoTrueUserResponse,GoTrueTokenResponse>(
     goTrueHttpClient = { customHttpClient() },
     goTrueJsonConverter = customConverter()
 )
