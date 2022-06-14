@@ -15,7 +15,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 class GoTrueJsonConverterJackson : GoTrueJsonConverter {
 
     private val objectMapper = ObjectMapper()
-        .registerModule(KotlinModule())
+        .registerModule(KotlinModule.Builder().build())
         .registerModule(JavaTimeModule())
         .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
