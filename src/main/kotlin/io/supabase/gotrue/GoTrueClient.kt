@@ -6,6 +6,7 @@ import io.supabase.gotrue.json.GoTrueJsonConverter
 import io.supabase.gotrue.json.GoTrueJsonConverterJackson
 import io.supabase.gotrue.types.*
 import org.apache.hc.client5.http.impl.classic.HttpClients
+import java.util.Locale
 
 open class GoTrueClient<UserResponseClass : Any, TokenResponseClass : Any>(
     val goTrueHttpClient: GoTrueHttpClient,
@@ -100,7 +101,7 @@ open class GoTrueClient<UserResponseClass : Any, TokenResponseClass : Any>(
     fun verify(type: GoTrueVerifyType, token: String, password: String? = null): TokenResponseClass {
         val response = goTrueHttpClient.post(
             url = "/verify",
-            data = mapOf("type" to type.name.toLowerCase(), "token" to token, "password" to password),
+            data = mapOf("type" to type.name.lowercase(Locale.getDefault()), "token" to token, "password" to password),
         )!!
 
         return goTrueJsonConverter.deserialize(response, goTrueTokenResponseClass)
