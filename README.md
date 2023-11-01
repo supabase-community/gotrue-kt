@@ -1,5 +1,8 @@
 # Kotlin Client for GoTrue
 
+> **Warning**
+> This repository is archived. Use [supabase-kt](https://github.com/supabase-community/supabase-kt) instead to use Supabase in your Android application.
+
 Kotlin JVM client for [Netlify's GoTrue API](https://github.com/netlify/gotrue).
 
 Comes with DTOs for the responses to enable type-safe access.
@@ -11,6 +14,7 @@ Comes with DTOs for the responses to enable type-safe access.
 ## Installation
 
 Maven
+
 ```xml
 <dependency>
     <groupId>io.supabase</groupId>
@@ -21,10 +25,10 @@ Maven
 ```
 
 Gradle
+
 ```groovy
 implementation 'io.supabase:gotrue-kt:{version}'
 ```
-
 
 ## Usage
 
@@ -43,7 +47,7 @@ try {
                 "admin" = true
         )
     )
-    
+
     println(updatedUser.updatedAt)
 } catch (exc: GoTrueHttpException) {
     // Exception is thrown on bad status (anything above 300)
@@ -53,7 +57,7 @@ try {
 
 You can also customize the DTO for example if you turn off email verification
 
-`````kotlin
+```kotlin
 data class CustomGoTrueUserResponse(
     val accessToken: String,
     val tokenType: String,
@@ -72,7 +76,7 @@ GoTrueClient.customApacheJacksonGoTrueClient<CustomGoTrueUserResponse, GoTrueTok
     url = "<base-url>",
     headers = mapOf("Authorization" to "foo", "apiKey" to "bar")
 )
-`````
+```
 
 If you are using [supabase](https://supabase.io/), the base URL will be `https://<your-project-id>.supabase.co/auth/v1`
 
